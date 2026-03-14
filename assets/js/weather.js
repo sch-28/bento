@@ -56,7 +56,13 @@ function getWeather(latitude, longitude) {
 }
 
 function displayWeather() {
-	iconElement.innerHTML = `<img src="assets/icons/${CONFIG.weatherIcons}/${weather.iconId}.png"/>`;
-	tempElement.innerHTML = `${weather.temperature.value.toFixed(0)}°<span class="darkfg">${tempUnit}</span>`;
-	descElement.innerHTML = weather.description;
+	if (iconElement) iconElement.innerHTML = `<img src="assets/icons/${CONFIG.weatherIcons}/${weather.iconId}.png"/>`;
+	if (tempElement) tempElement.innerHTML = `${weather.temperature.value.toFixed(0)}°<span class="darkfg">${tempUnit}</span>`;
+	if (descElement) descElement.innerHTML = weather.description;
+
+	// i3 status bar weather
+	var headerWeather = document.getElementById('header-weather');
+	if (headerWeather) {
+		headerWeather.innerText = `${weather.temperature.value.toFixed(0)}°${tempUnit} ${weather.description}`;
+	}
 }

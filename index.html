@@ -2,25 +2,30 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Bento</title>
+		<title>~</title>
 		<link rel=" shortcut icon" type="image/png" href="assets/icons/favicon.png" />
 		<link rel="stylesheet" href="app.css" />
 		<script src="https://unpkg.com/lucide@latest"></script>
 	</head>
-
-	<!-- 
-      ╔╗ ╔═╗╔╗╔╔╦╗╔═╗
-      ╠╩╗║╣ ║║║ ║ ║ ║
-      ╚═╝╚═╝╝╚╝ ╩ ╚═╝
-      -->
 
 	<body class="">
 		<button id="themeButton">
 			<i id="themeIcon" icon-name="moon"></i>
 		</button>
 		<div class="container">
-			<!-- Clock and Greetings  -->
+			<!-- i3-style header bar -->
+			<div class="header-bar">
+				<div class="header-left" id="wsTags">
+					<!-- populated by layout.js -->
+				</div>
+				<div class="header-right">
+					<span class="header-info" id="header-weather"></span>
+					<span class="header-info" id="header-date"></span>
+					<span class="header-info" id="header-time"></span>
+				</div>
+			</div>
 
+			<!-- Clock and Greetings -->
 			<div class="timeBlock">
 				<div class="clock">
 					<div id="hour"></div>
@@ -30,30 +35,21 @@
 				<div id="greetings"></div>
 			</div>
 
-			<!-- Date and Weather  -->
+			<div class="separator-line"></div>
 
-			<div class="weatherBlock">
-				<div class="date">
-					<div id="month"></div>
-					<div id="day"></div>
-				</div>
-				<div class="weather">
-					<div class="weatherIcon">
-						<img src="assets/icons/OneDark/unknown.png" />
-					</div>
-					<div class="weatherValue">
-						<p>- °<span class="g">c</span></p>
-					</div>
-					<div class="weatherDescription">
-						<p></p>
-					</div>
-				</div>
+			<!-- Shell prompt showing ls -->
+			<div class="prompt">
+				<span class="prompt-user">jan</span><span class="prompt-at">@</span><span class="prompt-host">arch</span>
+				<span class="prompt-path" id="promptPath">~/bookmarks/general</span>
+				<span class="prompt-symbol">$</span>
+				<span class="prompt-cmd">ls</span>
 			</div>
 
-			<div class="linksBlock" id="linksBlock">
-				<div class="linksBlockLeft" id="linksBlockLeft"></div>
-				<div class="linksBlockRight" id="linksBlockRight"></div>
-			</div>
+			<!-- ls output: bookmarks rendered as flat file listing -->
+			<div class="ls-output" id="lsOutput"></div>
+
+			<div class="separator-line"></div>
+
 		</div>
 
 		<!-- Config  -->
@@ -66,16 +62,9 @@
 		<script src="assets/js/greeting.js"></script>
 		<script src="assets/js/weather.js"></script>
 
-		<!-- Generators  -->
-		<script src="assets/js/buttons.js"></script>
-		<script src="assets/js/lists.js"></script>
-
 		<!-- Icons -->
 		<script>
 			lucide.createIcons();
 		</script>
 	</body>
-
-	<!-- Developed and designed by Miguel Ávila: -->
-	<!-- https://avila.sh-->
 </html>

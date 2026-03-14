@@ -1,45 +1,70 @@
 // ┬  ┌─┐┬ ┬┌─┐┬ ┬┌┬┐
 // │  ├─┤└┬┘│ ││ │ │
 // ┴─┘┴ ┴ ┴ └─┘└─┘ ┴
-// Generate Layout.
+// Workspace tab switching + ls bookmark rendering
 
-const generateLayout = () => {
-	let firstButtonsContainer = `
-    <div class="buttonsContainer" id="buttons_1"></div>
-  `;
-	let secondButtonsContainer = `
-    <div class="buttonsContainer" id="buttons_2"></div>
-  `;
-	let firstListsContainer = `
-    <div class="listsContainer" id="lists_1"></div>
-  `;
+let activeWorkspace = 0;
 
-	let secondListsContainer = `
-    <div class="listsContainer" id="lists_2"></div>
-  `;
+const renderWorkspace = (index) => {
+	const ws = CONFIG.workspaces[index];
+	if (!ws) return;
 
-	const position = 'beforeend';
+	// Update prompt paths
+	const path = `~/bookmarks/${ws.name}`;
+	const promptPath = document.getElementById('promptPath');
+	const promptPathIdle = document.getElementById('promptPathIdle');
+	if (promptPath) promptPath.innerText = path;
+	if (promptPathIdle) promptPathIdle.innerText = path;
 
-	switch (CONFIG.bentoLayout) {
-		case 'bento':
-			linksBlockLeft.insertAdjacentHTML(position, firstButtonsContainer);
-			linksBlockRight.insertAdjacentHTML(position, firstListsContainer);
-			linksBlock.classList.remove('reduceGap');
-			linksBlock.classList.remove('removeGap');
-			break;
-		case 'lists':
-			linksBlockLeft.insertAdjacentHTML(position, firstListsContainer);
-			linksBlockRight.insertAdjacentHTML(position, secondListsContainer);
-			linksBlock.classList.add('reduceGap');
-			break;
-		case 'buttons':
-			linksBlockLeft.insertAdjacentHTML(position, firstButtonsContainer);
-			linksBlockRight.insertAdjacentHTML(position, secondButtonsContainer);
-			linksBlock.classList.add('removeGap');
-			break;
-		default:
-			break;
+	// Clear and repopulate ls output
+	const output = document.getElementById('lsOutput');
+	if (!output) return;
+	output.innerHTML = '';
+
+	for (const bookmark of ws.bookmarks) {
+		const icon = bookmark.icon
+			? `<i class="ls-entry-icon" icon-name="${bookmark.icon}"></i>`
+			: '';
+		const entry = `<a
+			href="${bookmark.link}"
+			target="${CONFIG.openInNewTab ? '_blank' : ''}"
+			class="ls-entry"
+		>${icon}${bookmark.name}</a>`;
+		output.insertAdjacentHTML('beforeend', entry);
 	}
+
+	lucide.createIcons();
+
+	// Update active ws tag
+	document.querySelectorAll('.ws-tag').forEach((tag, i) => {
+		tag.classList.toggle('active', i === index);
+	});
+
+	activeWorkspace = index;
 };
 
-generateLayout();
+const generateWsTags = () => {
+	const container = document.getElementById('wsTags');
+	if (!container) return;
+
+	CONFIG.workspaces.forEach((ws, i) => {
+		const tag = document.createElement('span');
+		tag.className = 'ws-tag' + (i === 0 ? ' active' : '');
+		tag.textContent = `${ws.id}:${ws.name}`;
+		tag.addEventListener('click', () => renderWorkspace(i));
+		container.appendChild(tag);
+	});
+};
+
+// Keyboard: Alt+1, Alt+2, Alt+3 to switch workspaces
+document.addEventListener('keydown', (e) => {
+	if (!e.altKey) return;
+	const num = parseInt(e.key);
+	if (!isNaN(num) && num >= 1 && num <= CONFIG.workspaces.length) {
+		e.preventDefault();
+		renderWorkspace(num - 1);
+	}
+});
+
+generateWsTags();
+renderWorkspace(0);
